@@ -1,0 +1,63 @@
+/* Estilos Generales */
+/* #58cc02 */
+:root {
+    --color: #46c2e1;
+}
+
+body {
+    font-family: 'Noto Sans', sans-serif;
+    color: #3c3c3c;
+    background-color: cadetblue;
+  }
+  
+  /* Cabecera */
+  header {
+    background-color: var(--color);
+    color: #ffffff;
+    padding: 10px;
+    text-align: center;
+  }
+  
+  /* Navegación */
+  nav {
+    background-color: #f5f5f5;
+    padding: 10px;
+  }
+  
+  nav a {
+    color: #3c3c3c;
+    text-decoration: none;
+    margin: 0 15px;
+  }
+  
+  nav a:hover {
+    color: var(--color);
+  }
+  
+  /* Contenido Principal */
+  main {
+    padding: 20px;
+  }
+  
+  /* Botón de Acción */
+  .action-button {
+    background-color: var(--color);
+    color: #ffffff;
+    padding: 10px 20px;
+    text-decoration: none;
+    border-radius: 3px;
+    border: none;
+    display: inline-block;
+  }
+  
+  /* #46a902 */
+  .action-button:hover {
+    background-color: #084570;
+  }
+  
+  /* Pie de Página */
+  footer {
+    background-color: #f5f5f5;
+    padding: 10px;
+    text-align: center;
+  }
