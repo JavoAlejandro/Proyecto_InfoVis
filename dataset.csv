@@ -1,4 +1,4 @@
-Model,Brand,Release date,Max resolution,Low resolution,Effective pixels,Zoom wide (W),Zoom tele (T),Normal focus range,Macro focus range,Storage included,Weight (inc. batteries),Dimensions,Price
+Model,Brand,Release_date,Max_resolution,Low_resolution,Effective_pixels,Zoom_wide,Zoom_tele,Normal_focus_range,Macro_focus_range,Storage_included,Weight-inc.batteries,Dimensions,Price
 Agfa ePhoto 1280,Agfa,1997,1024.0,640.0,0.0,38.0,114.0,70.0,40.0,4.0,420.0,95.0,179.0
 Agfa ePhoto 1680,Agfa,1998,1280.0,640.0,1.0,38.0,114.0,50.0,0.0,4.0,420.0,158.0,179.0
 Agfa ePhoto CL18,Agfa,2000,640.0,0.0,0.0,45.0,45.0,0.0,0.0,2.0,0.0,0.0,179.0
