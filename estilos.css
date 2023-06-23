@@ -10,7 +10,6 @@ body {
     background-color: cadetblue;
   }
   
-  /* Cabecera */
   header {
     background-color: var(--color);
     color: #ffffff;
@@ -18,7 +17,6 @@ body {
     text-align: center;
   }
   
-  /* Navegación */
   nav {
     background-color: #f5f5f5;
     padding: 10px;
@@ -34,12 +32,10 @@ body {
     color: var(--color);
   }
   
-  /* Contenido Principal */
   main {
     padding: 20px;
   }
   
-  /* Botón de Acción */
   .action-button {
     background-color: var(--color);
     color: #ffffff;
@@ -50,18 +46,46 @@ body {
     display: inline-block;
   }
   
-  /* #46a902 */
   .action-button:hover {
     background-color: #084570;
   }
   
-  /* Pie de Página */
   footer {
     background-color: #f5f5f5;
     padding: 10px;
     text-align: center;
   }
 
-  #vis-1 {
+  #svg1 {
     background-color:antiquewhite;
+  }
+
+  .container {
+    margin-top: 40px;
+    margin-bottom: 40px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 50vh; 
+  }
+
+  .labely{
+    transform-origin: bottom left;
+    transform: rotate(-90deg);
+  }
+  
+  #cuadro {
+    position: relative;
+    z-index: 2;
+  }
+  .txt{
+    font-size: small;
+  }
+  #fondo_tt { 
+    filter: opacity(40%);
+  }
+
+  .punto {
+    position: relative;
+    z-index: 1;
   }
