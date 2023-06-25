@@ -82,7 +82,7 @@ body {
     font-size: small;
   }
   #fondo_tt { 
-    filter: opacity(40%);
+    filter: opacity(100%);
   }
 
   .punto {

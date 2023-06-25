@@ -189,7 +189,30 @@ function createCameras(data) {
           )
           .attr("cx", (d) => escalaPrecioPanoramica(d.Price)),
       (exit) => exit.remove()
-    );
+    )
+    .on("mouseover", function (event, d) {
+      txt11.text(`Camera: ${d.Model}`);
+      txt12.text(`Price: ${d.Price}`);
+      txt13.text(`Max Resolution: ${d.Max_resolution}`);
+      contenedorCuadro.style("visibility", "visible");
+    })
+    .on("mousemove", function (event) {
+      txt11
+        .attr("x", event.offsetX - 75 + "px")
+        .attr("y", event.offsetY + 20 + "px");
+      txt12
+        .attr("x", event.offsetX - 75 + "px")
+        .attr("y", event.offsetY + 35 + "px");
+      txt13
+        .attr("x", event.offsetX - 75 + "px")
+        .attr("y", event.offsetY + 50 + "px");
+      contenedorFondo
+        .attr("x", event.offsetX - 80 + "px")
+        .attr("y", event.offsetY + 5 + "px");
+    })
+    .on("mouseout", () => {
+      contenedorCuadro.style("visibility", "hidden");
+    }); 
    
   // Vista Detalle
     
@@ -265,16 +288,16 @@ function createCameras(data) {
     })
     .on("mousemove", function (event) {
       txt11
-        .attr("x", event.offsetX - 75 + "px")
+        .attr("x", event.offsetX + 25 + "px")
         .attr("y", event.offsetY + 20 + "px");
       txt12
-        .attr("x", event.offsetX - 75 + "px")
+        .attr("x", event.offsetX + 25 + "px")
         .attr("y", event.offsetY + 35 + "px");
       txt13
-        .attr("x", event.offsetX - 75 + "px")
+        .attr("x", event.offsetX + 25 + "px")
         .attr("y", event.offsetY + 50 + "px");
       contenedorFondo
-        .attr("x", event.offsetX - 80 + "px")
+        .attr("x", event.offsetX + 20 + "px")
         .attr("y", event.offsetY + 5 + "px");
     })
     .on("mouseout", () => {
