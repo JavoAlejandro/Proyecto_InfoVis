@@ -1,4 +1,3 @@
-const SVG1 = d3.select("#vis-1").append("svg");
 const SVG2 = d3.select("#vis-21").append("svg");
 
 const WIDTH1 = 900;
@@ -28,17 +27,7 @@ const detail_HEIGHT2 = 400
 
 const TIEMPO_TRANSICION = 800;
 
-
-
-SVG1.attr("width", WIDTH1).attr("height", HEIGHT1).attr("id", "svg1").style("border", "1px solid black");
 SVG2.attr("width", WIDTH2).attr("height", HEIGHT2).attr("id", "svg2").style("border", "1px solid black");
-
-const grafico1 = SVG1.append("g")
-  .attr("id", "grafico1")
-  .style("position", "absolute")
-  .style("z-index", "-1")
-  .attr("transform", `translate(${margin.left} ${margin.top})`);
-
 
 const grafico2 = SVG2.append("g")
   .attr("id", "grafico2")
@@ -46,7 +35,97 @@ const grafico2 = SVG2.append("g")
   .style("z-index", "1")
   .attr("transform", `translate(${margin2.left} ${margin2.top})`);
 
-  
+// ******************************************************************* VIS 1 ************************************************************************************
+const svgPanoramica = d3
+  .select("#vista_panoramica")
+  .attr("width", WIDTH1)
+  .attr("height", HEIGHT1)
+
+const svgDetalle = d3
+  .select("#vista_detalle")
+  .attr("width", HEIGHT1)
+  .attr("height", HEIGHT1)
+
+// Contenedores
+
+const contenedorEjeResolucion = svgPanoramica
+  .append("g")
+  .attr("transform", `translate(${margin.left}, ${margin.top})`);
+
+const contenedorEjePrecio = svgPanoramica
+  .append("g")
+  .attr("transform", `translate(${margin.left}, ${HEIGHT1 - margin.bottom})`);
+
+const contenedorPuntosPanoramica = svgPanoramica
+  .append("g")
+  .attr("transform", `translate(${margin.left}, ${margin.top})`);
+
+const contenedorBrush = svgPanoramica
+  .append("g")
+  .attr("transform", `translate(${margin.left}, ${margin.top})`);
+
+const contenedorEjeResolucionDetalle = svgDetalle
+  .append("g")
+  .attr("transform", `translate(${margin.left}, ${margin.top})`);
+
+const contenedorEjePrecioDetalle = svgDetalle
+  .append("g")
+  .attr("transform", `translate(${margin.left}, ${HEIGHT1 - margin.bottom})`);
+
+const contenedorPuntosDetalle = svgDetalle
+  .append("g")
+  .attr("transform", `translate(${margin.left}, ${margin.top})`);
+
+const contenedorTitulosPanoramica = svgPanoramica
+  .append("g");
+
+const contenedorTitulosDetalle = svgDetalle
+  .append("g");
+
+// Titulos
+
+contenedorTitulosPanoramica
+  .append("text")
+  .attr("transform", `translate(${WIDTH1 / 2}, ${margin.top / 2})`)
+  .attr("text-anchor", "middle")
+  .attr("font-size", 20)
+  .text("Vista Panorámica");
+
+contenedorTitulosPanoramica
+  .append("text")
+  .attr("transform", `rotate(-90) translate(${-(margin.top + HEIGHTVIS1 / 2)}, ${margin.left / 4})`)
+  .attr("text-anchor", "middle")
+  .attr("font-size", 16)
+  .text("Resolución Máxima");
+
+contenedorTitulosPanoramica
+  .append("text")
+  .attr("transform", `translate(${margin.left + WIDTHVIS1 / 2}, ${HEIGHT1 - margin.bottom / 2.5})`)
+  .attr("text-anchor", "middle")
+  .attr("font-size", 16)
+  .text("Precio");
+
+contenedorTitulosDetalle
+  .append("text")
+  .attr("transform", `translate(${HEIGHT1 / 2}, ${margin.top / 2})`)
+  .attr("text-anchor", "middle")
+  .attr("font-size", 20)
+  .text("Vista Detalle");
+
+contenedorTitulosDetalle
+  .append("text")
+  .attr("transform", `rotate(-90) translate(${-(margin.top + HEIGHTVIS1 / 2)}, ${margin.left / 4})`)
+  .attr("text-anchor", "middle")
+  .attr("font-size", 16)
+  .text("Resolución Máxima");
+
+contenedorTitulosDetalle
+  .append("text")
+  .attr("transform", `translate(${margin.left + HEIGHTVIS1 / 2}, ${HEIGHT1 - margin.bottom / 2.5})`)
+  .attr("text-anchor", "middle")
+  .attr("font-size", 16)
+  .text("Precio");
+
 function createCameras(data) {
   // Ejes
   const maximaresolucion = d3.max(data, (d) => d.Max_resolution);
@@ -56,27 +135,167 @@ function createCameras(data) {
   console.log(maximaresolucion)
   console.log(maximamplitud)
   console.log(maximaPrice)
-    
+
+  // Vista Panoramica
+
   const escala_amplitud = d3
-  .scaleLinear()
-  .domain([0, maximamplitud])
-  .range([0, WIDTHVIS1]);
+    .scaleLinear()
+    .domain([0, maximamplitud])
+    .range([0, WIDTHVIS1]);
 
-  const escala_price = d3
-  .scaleLinear()
-  .domain([0, maximaPrice])
-  .range([0, WIDTHVIS1]);
-      
-     
-  const escala_resolucion = d3
-  .scaleLinear()
-  .domain([0, maximaresolucion])
-  .range([HEIGHTVIS1, 0]);
-      
+  const escalaResolucionPanoramica = d3
+    .scaleLinear()
+    .domain(d3.extent(data, d => d.Max_resolution))
+    .range([HEIGHTVIS1, 0])
+    .nice();
+
+  const ejeResolucionPanoramica = d3.axisLeft(escalaResolucionPanoramica);
+
+  contenedorEjeResolucion.call(ejeResolucionPanoramica)
+
+  const escalaPrecioPanoramica = d3
+    .scaleLinear()
+    .domain(d3.extent(data, d => d.Price))
+    .range([0, WIDTHVIS1])
+    .nice();
+  
+  const ejePrecioPanoramica = d3.axisBottom(escalaPrecioPanoramica);
+
+  contenedorEjePrecio.call(ejePrecioPanoramica)
+
+  const puntosPanoramica = contenedorPuntosPanoramica
+    .selectAll("circle")
+    .data(data)
+    .join(
+      (enter) =>
+        enter
+          .append("circle")
+          .attr("class", "punto")
+          .attr("cx", (d, i) => escalaPrecioPanoramica(d.Price))
+          .attr(
+            "cy", (d) => escalaResolucionPanoramica(d.Max_resolution))
+          .transition()
+          .duration(TIEMPO_TRANSICION)
+          .attr("r", (d) => 4)
+          .attr("fill", "#D9ED92")
+          .attr("stroke", "#113149"),
+      (update) =>
+        update
+          .transition()
+          .duration(TIEMPO_TRANSICION)
+          .attr(
+            "cy",
+            (d) => escalaResolucionPanoramica(d.Max_resolution)
+          )
+          .attr("cx", (d) => escalaPrecioPanoramica(d.Price)),
+      (exit) => exit.remove()
+    );
+   
+  // Vista Detalle
     
-  const ejeY = d3.axisLeft(escala_resolucion);
-  const ejeX = d3.axisBottom(escala_price);
+  const escalaResolucionDetalle = d3
+    .scaleLinear()
+    .domain([200,100].map(escalaResolucionPanoramica.invert))
+    .range([HEIGHTVIS1, 0]);
 
+  const ejeResolucionDetalle = d3.axisLeft(escalaResolucionDetalle);
+
+  contenedorEjeResolucionDetalle.call(ejeResolucionDetalle)
+
+  const escalaPrecioDetalle = d3
+    .scaleLinear()
+    .domain([100,200].map(escalaPrecioPanoramica.invert))
+    .range([0, HEIGHTVIS1]);
+  
+  const ejePrecioDetalle = d3.axisBottom(escalaPrecioDetalle);
+
+  contenedorEjePrecioDetalle.call(ejePrecioDetalle);
+  
+  const puntosDetalle = contenedorPuntosDetalle
+    .selectAll("circle")
+    .data(data)
+    .join(
+      (enter) =>
+        enter
+          .append("circle")
+          .attr("class", "punto")
+          .attr("cx", (d, i) => escalaPrecioDetalle(d.Price))
+          .attr(
+            "cy", (d) => escalaResolucionDetalle(d.Max_resolution))
+          .transition()
+          .duration(TIEMPO_TRANSICION)
+          .attr("r", (d) => 4)
+          .attr("fill", "orange")
+          .attr("stroke", "#113149"),
+      (update) =>
+        update
+          .transition()
+          .duration(TIEMPO_TRANSICION)
+          .attr(
+            "cy",
+            (d) => escalaResolucionDetalle(d.Max_resolution)
+          )
+          .attr("cx", (d) => escalaPrecioDetalle(d.Price)),
+      (exit) => exit.remove()
+    );
+  
+  svgDetalle
+    .append("clipPath")
+    .attr("id", "clip-detalle")
+    .append("rect")
+    .attr("width", HEIGHT1 - margin.top - margin.bottom)
+    .attr("height", HEIGHT1 - margin.top - margin.bottom);
+  
+  contenedorPuntosDetalle.attr("clip-path", "url(#clip-detalle)");
+
+  // Brush
+
+  const brush = d3
+    .brush()
+    .extent([
+      [0, 0],
+      [WIDTH1 - margin.left - margin.right, HEIGHT1 - margin.top - margin.bottom]
+    ])
+  
+  contenedorBrush.call(brush);
+
+  const brushed = (evento) => {
+    const seleccion = evento.selection;
+
+    const precioMin = escalaPrecioPanoramica.invert(seleccion[0][0]);
+    const precioMax = escalaPrecioPanoramica.invert(seleccion[1][0]);
+
+    const resolucionMin = escalaResolucionPanoramica.invert(seleccion[1][1]);
+    const resolucionMax = escalaResolucionPanoramica.invert(seleccion[0][1]);
+
+    const filtro = d => 
+      precioMin <= d.Price && d.Price <= precioMax && resolucionMin <= d.Max_resolution && d.Max_resolution <= resolucionMax;
+    
+    puntosPanoramica
+      .attr("fill", d => filtro(d) ? "orange" : "#D9ED92")
+    
+    escalaPrecioDetalle.domain([precioMin, precioMax]);
+    contenedorEjePrecioDetalle.call(d3.axisBottom(escalaPrecioDetalle));
+
+    escalaResolucionDetalle.domain([resolucionMin, resolucionMax]);
+    contenedorEjeResolucionDetalle.call(d3.axisLeft(escalaResolucionDetalle));
+
+    puntosDetalle
+      .attr("cx", d => escalaPrecioDetalle(d.Price))
+      .attr("cy", d => escalaResolucionDetalle(d.Max_resolution))
+  }
+
+  brush.on("brush", brushed);
+
+  contenedorBrush.call(brush.move, [
+    [100, 100],
+    [200, 200]
+  ]);
+
+  contenedorBrush.select(".selection").attr("fill", "orange");
+
+
+/*
   SVG1
   .append("g")
   .attr("transform", `translate(${margin.left}, ${margin.top})`)
@@ -175,10 +394,8 @@ function createCameras(data) {
       cuadro.style("visibility", "hidden");
     });
 
+*/
 };
-
-
-
 
 // ******************************************************************* VIS 2 ************************************************************************************
 

@@ -89,3 +89,12 @@ body {
     position: relative;
     z-index: 1;
   }
+  
+  .flex-horizontal {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+    align-content: center;
+    width: 1050px;
+
+}
