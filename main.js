@@ -1,13 +1,13 @@
 const SVG2 = d3.select("#vis-21").append("svg");
 
-const WIDTH1 = 900;
+const WIDTH1 = 600;
 const HEIGHT1 = 400;
 const margin = {
-    top: 30,
-    bottom: 50,
-    left: 90,
-    right: 220,
-  };
+  top: 60,
+  bottom: 60,
+  right: 30,
+  left: 60
+};
 const HEIGHTVIS1 = HEIGHT1 - margin.top - margin.bottom;
 const WIDTHVIS1 = WIDTH1 - margin.right - margin.left;
 
@@ -210,6 +210,25 @@ function createCameras(data) {
   const ejePrecioDetalle = d3.axisBottom(escalaPrecioDetalle);
 
   contenedorEjePrecioDetalle.call(ejePrecioDetalle);
+
+  const contenedorCuadro = svgDetalle
+    .append("g")
+    .attr("id", "cuadro")
+    .style("visibility", "hidden");
+  
+  const contenedorFondo = contenedorCuadro
+    .append("rect")
+    .attr("id", "fondo_tt")
+    .style("fill", "yellow")
+    .attr("stroke", "#113149")
+    .attr("stroke-width", "1")
+    .attr("width", 205)
+    .attr("height", 60)
+    .attr("rx", "4px");
+
+  const txt11 = contenedorCuadro.append("text").attr("class", "txt");
+  const txt12 = contenedorCuadro.append("text").attr("class", "txt");
+  const txt13 = contenedorCuadro.append("text").attr("class", "txt");
   
   const puntosDetalle = contenedorPuntosDetalle
     .selectAll("circle")
@@ -237,7 +256,30 @@ function createCameras(data) {
           )
           .attr("cx", (d) => escalaPrecioDetalle(d.Price)),
       (exit) => exit.remove()
-    );
+    )
+    .on("mouseover", function (event, d) {
+      txt11.text(`Camera: ${d.Model}`);
+      txt12.text(`Price: ${d.Price}`);
+      txt13.text(`Max Resolution: ${d.Max_resolution}`);
+      contenedorCuadro.style("visibility", "visible");
+    })
+    .on("mousemove", function (event) {
+      txt11
+        .attr("x", event.offsetX - 75 + "px")
+        .attr("y", event.offsetY + 20 + "px");
+      txt12
+        .attr("x", event.offsetX - 75 + "px")
+        .attr("y", event.offsetY + 35 + "px");
+      txt13
+        .attr("x", event.offsetX - 75 + "px")
+        .attr("y", event.offsetY + 50 + "px");
+      contenedorFondo
+        .attr("x", event.offsetX - 80 + "px")
+        .attr("y", event.offsetY + 5 + "px");
+    })
+    .on("mouseout", () => {
+      contenedorCuadro.style("visibility", "hidden");
+    }); 
   
   svgDetalle
     .append("clipPath")
