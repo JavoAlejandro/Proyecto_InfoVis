@@ -25,6 +25,19 @@ const WIDTHVIS2 = WIDTH2 - margin2.right - margin2.left;
 const detail_WIDTH2 = 400
 const detail_HEIGHT2 = 400
 
+const WIDTH3 = 800;
+const HEIGHT3 = 600;
+
+const margin3 = {
+    top: 50,
+    bottom: 60,
+    left: 60,
+    right: 30
+};
+
+const HEIGHTVIS3 = HEIGHT3 - margin3.top - margin3.bottom;
+const WIDTHVIS3 = WIDTH3 - margin3.right - margin3.left;
+
 const TIEMPO_TRANSICION = 800;
 
 SVG2.attr("width", WIDTH2).attr("height", HEIGHT2).attr("id", "svg2").style("border", "1px solid black");
@@ -131,10 +144,12 @@ function createCameras(data) {
   const maximaresolucion = d3.max(data, (d) => d.Max_resolution);
   const maximamplitud = d3.max(data, (d) => d.Zoom_wide);
   const maximaPrice = d3.max(data, (d) => d.Price);
+
   // Price
   console.log(maximaresolucion)
   console.log(maximamplitud)
   console.log(maximaPrice)
+
 
   // Vista Panoramica
 
@@ -655,3 +670,57 @@ function lineas_marca(data) {
     console.log(data)
   }
 };
+// ******************************************************************* VIS 3 ************************************************************************************
+
+const svg3 = d3
+  .select("#multilinea")
+  .attr("width", WIDTH3)
+  .attr("height", HEIGHT3);
+
+const contenedorEjeTiempo = svg3
+  .append("g")
+  .attr("transform", `translate(${margin3.left}, ${HEIGHT3 - margin3.bottom})`);
+
+const contenedorEjePrecioAño = svg3
+  .append("g")
+  .attr("transform", `translate(${margin3.left}, ${margin3.top})`);
+
+const contenedorLineas = svg3
+  .append("g")
+  .attr("transform", `translate(${margin3.left}, ${margin3.top})`);
+
+const contenedorTitulos = svg3
+  .append("g");
+
+contenedorTitulos
+  .append("text")
+  .attr("transform", `translate(${WIDTH3 / 2}, ${margin3.top / 2})`)
+  .attr("text-anchor", "middle")
+  .attr("font-size", 20)
+  .text("Evolución del precio promedio a lo largo del tiempo");
+
+contenedorTitulos
+  .append("text")
+  .attr("transform", `rotate(-90) translate(${-(margin3.top + HEIGHTVIS3 / 2)}, ${margin3.left / 4})`)
+  .attr("text-anchor", "middle")
+  .attr("font-size", 16)
+  .text("Precio promedio");
+
+contenedorTitulos
+  .append("text")
+  .attr("transform", `translate(${margin3.left + WIDTHVIS3 / 2}, ${HEIGHT3 - margin3.bottom / 2.5})`)
+  .attr("text-anchor", "middle")
+  .attr("font-size", 16)
+  .text("Año");
+
+const widthLegend = 200,
+  heightLegend = 100;
+
+const svgLegend = d3
+  .select("#leyenda")
+  .attr("width", widthLegend)
+  .attr("height", heightLegend);
+
+const createMultiLine = (data) => {
+  console.log(data);
+}
