@@ -598,7 +598,10 @@ function lineas_marca(data) {
       .attr("fill","transparent")
       .attr('stroke-width', 2)
       .attr('class', 'box')
-      ).on("click", (d) => console.log(valores));
+      ).on("click", function() {
+      console.log(clave)
+      radar_marca(data, clave)
+    })
       // (d) => updateBarChart(d)
     
     grupoCaja.append('line')
@@ -608,6 +611,11 @@ function lineas_marca(data) {
       .attr('y2', (d)=> escala_y(cuartiles[1]))
       .attr('stroke', 'white')
       .attr('stroke-width', 2)
+      .on("click", function() {
+        console.log(clave)
+        radar_marca(data, clave)
+      })
+      
     // LI
     grupoCaja.append('line')
       .attr('x1', 0)
@@ -616,6 +624,10 @@ function lineas_marca(data) {
       .attr('y2', (d)=> escala_y(cuartiles[3]))
       .attr('stroke', 'black')
       .attr('stroke-width', 2)
+      .on("click", function() {
+        console.log(clave)
+        radar_marca(data, clave)
+      })
 
     // LS
     grupoCaja.append('line')
@@ -625,6 +637,10 @@ function lineas_marca(data) {
       .attr('y2', (d)=> escala_y(cuartiles[4]))
       .attr('stroke', 'black')
       .attr('stroke-width', 2)
+      .on("click", function() {
+        console.log(clave)
+        radar_marca(data, clave)
+      })
 
     grupoCaja.append('line')
       .attr('x1', 5)
@@ -633,6 +649,10 @@ function lineas_marca(data) {
       .attr('y2', escala_y(cuartiles[2]))
       .attr('stroke', 'black')
       .attr('stroke-width', 2)
+      .on("click", function() {
+        console.log(clave)
+        radar_marca(data, clave)
+      })
     grupoCaja.append('line')
       .attr('x1', 5)
       .attr('x2', 5)
@@ -640,6 +660,10 @@ function lineas_marca(data) {
       .attr('y2', escala_y(cuartiles[3]))
       .attr('stroke', 'black')
       .attr('stroke-width', 2)
+      .on("click", function() {
+        console.log(clave)
+        radar_marca(data, clave)
+      })
 
     grupoCaja.selectAll('circle')
       .data(valoresAtipicos)
@@ -650,7 +674,11 @@ function lineas_marca(data) {
       .attr('cx', 5)
       .attr('cy', d => escala_y(d))
       .attr('r', 2)
-      .attr('fill', 'red'));
+      .attr('fill', 'red'))
+      .on("click", function() {
+        console.log(clave)
+        radar_marca(data, clave)
+      })
     
     grupoCaja.selectAll('text').data([clave])
       .join(
@@ -662,7 +690,11 @@ function lineas_marca(data) {
       .attr('fill', 'black')
       .text(clave)
       .attr('transform', `translate(${5}, ${HEIGHT2 - margin2.bottom}) rotate(-45) translate(-${5}, -${HEIGHT2 - margin2.bottom})`)
-      .attr("class","txt"));
+      .attr("class","txt"))
+      .on("click", function() {
+        console.log(clave)
+        radar_marca(data, clave)
+      })
     count ++;
   }
   // .append("svg").attr("width", detail_WIDTH2).attr("height", detail_HEIGHT2).attr("id", "detail2").style("border", "1px solid black");
@@ -775,8 +807,8 @@ const labels = grafico3.selectAll(".label")
       }),
       (exit) => exit.remove()
   ); 
-function radar_marca(data) {
-  SVG3
+function radar_marca(data, brand) {
+  d3.selectAll("#selected").text(`Marca: ${brand}`)
 }
 
 
@@ -788,6 +820,3 @@ function radar_marca(data) {
 //   .attr("width", widthLegend)
 //   .attr("height", heightLegend);
 
-const createMultiLine = (data) => {
-  console.log(data);
-}
