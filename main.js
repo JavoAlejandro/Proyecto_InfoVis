@@ -1,4 +1,5 @@
 const SVG2 = d3.select("#vis-21").append("svg");
+const SVG3 = d3.select("#vis-23").append("svg");
 
 const WIDTH1 = 600;
 const HEIGHT1 = 400;
@@ -25,14 +26,14 @@ const WIDTHVIS2 = WIDTH2 - margin2.right - margin2.left;
 const detail_WIDTH2 = 400
 const detail_HEIGHT2 = 400
 
-const WIDTH3 = 800;
-const HEIGHT3 = 600;
+const WIDTH3 = 400;
+const HEIGHT3 = 400;
 
 const margin3 = {
     top: 50,
-    bottom: 60,
-    left: 60,
-    right: 30
+    bottom: 50,
+    left: 50,
+    right: 50
 };
 
 const HEIGHTVIS3 = HEIGHT3 - margin3.top - margin3.bottom;
@@ -41,12 +42,19 @@ const WIDTHVIS3 = WIDTH3 - margin3.right - margin3.left;
 const TIEMPO_TRANSICION = 800;
 
 SVG2.attr("width", WIDTH2).attr("height", HEIGHT2).attr("id", "svg2").style("border", "1px solid black");
+SVG3.attr("width", WIDTH3).attr("height", HEIGHT3).attr("id", "svg3").style("border", "1px solid black");
 
 const grafico2 = SVG2.append("g")
   .attr("id", "grafico2")
   .style("position", "absolute")
   .style("z-index", "1")
   .attr("transform", `translate(${margin2.left} ${margin2.top})`);
+
+const grafico3 = SVG3.append("g")
+  .attr("id", "grafico3")
+  .style("position", "absolute")
+  .style("z-index", "1")
+  .attr("transform", `translate(${+ WIDTHVIS3 / 2 +margin3.left} ${+ WIDTHVIS3 / 2 +margin3.top})`);
 
 // ******************************************************************* VIS 1 ************************************************************************************
 const svgPanoramica = d3
@@ -672,54 +680,113 @@ function lineas_marca(data) {
 };
 // ******************************************************************* VIS 3 ************************************************************************************
 
-const svg3 = d3
-  .select("#multilinea")
-  .attr("width", WIDTH3)
-  .attr("height", HEIGHT3);
+datos = [{label: 'Etiqueta 1', value: 80},
+{label: 'Etiqueta 2', value: 60},
+{label: 'Etiqueta 3', value: 70},
+{label: 'Etiqueta 4', value: 50},
+{label: 'Etiqueta 5', value: 75}]
+// grafico3
+var radius = Math.min(WIDTHVIS3, HEIGHTVIS3) / 2;
+var angleScale = d3.scaleBand()
+.domain(datos.map((d) => d.label))
+.range([0, Math.PI * 2])
+.padding(0.2);
 
-const contenedorEjeTiempo = svg3
-  .append("g")
-  .attr("transform", `translate(${margin3.left}, ${HEIGHT3 - margin3.bottom})`);
+var radiusScale = d3.scaleLinear()
+.domain([0, d3.max(datos, (d) => d.value)])
+.range([0, radius]);
 
-const contenedorEjePrecioAño = svg3
-  .append("g")
-  .attr("transform", `translate(${margin3.left}, ${margin3.top})`);
+var line = d3.lineRadial()
+.angle((d) => angleScale(d.label))
+.radius((d) => radiusScale(d.value))
+.curve(d3.curveLinearClosed);
 
-const contenedorLineas = svg3
-  .append("g")
-  .attr("transform", `translate(${margin3.left}, ${margin3.top})`);
+console.log(datos.map((d) => d.label))
 
-const contenedorTitulos = svg3
-  .append("g");
+for (var i = 0; i < datos.length; i++) {
+  var level = (i + 1) * radius / datos.length; 
+  var lineData = datos.map(function(d) {
+    return {
+      angle: angleScale(d.label),
+      radius: level
+    };
+  });
 
-contenedorTitulos
-  .append("text")
-  .attr("transform", `translate(${WIDTH3 / 2}, ${margin3.top / 2})`)
+  var lineFunction = d3.lineRadial()
+    .angle(function(d) { return d.angle; })
+    .radius(function(d) { return d.radius; })
+    .curve(d3.curveLinearClosed);
+
+    grafico3.append("path")
+    .datum(lineData)
+    .attr("d", lineFunction)
+    .attr("fill", "none")
+    .attr("stroke", "rgba(0, 0, 0, " + 0.3 + ")")
+    .attr("stroke-width", 1);
+};
+
+const area = grafico3.selectAll(".area")
+.data([datos])
+.join(
+  (enter) =>
+    enter.append("path")
+      .attr("class", "area")
+      .attr("d", line)
+      .attr("fill", "rgba(75, 192, 192, 0.2)") 
+      .attr("stroke", "rgba(75, 192, 192, 1)")
+      .attr("stroke-width", 1),
+  (update) =>
+    update
+      .transition()
+      .duration(TIEMPO_TRANSICION)
+      .attr("d", line)
+      .attr("fill", "rgba(75, 192, 192, 0.2)")
+      .attr("stroke", "rgba(75, 192, 192, 1)")
+      .attr("stroke-width", 1)
+      ,
+      (exit) => exit.remove()
+      ); 
+const labels = grafico3.selectAll(".label")
+.data(datos)
+.join(
+  (enter) =>
+  enter.append("text")
+  .attr("class", "label")
+  .attr("x", function(d) {
+    return radiusScale(d.value) * Math.cos(angleScale(d.label))
+  })
+  .attr("y", function(d) {
+    return radiusScale(d.value) * Math.sin(angleScale(d.label))
+  })
+  .text((d) => d.label)
   .attr("text-anchor", "middle")
-  .attr("font-size", 20)
-  .text("Evolución del precio promedio a lo largo del tiempo");
+  .attr("font-size", 12)
+  .attr("dy", "0.3em")
+  ,
+  (update) =>
+    update
+      .transition()
+      .duration(TIEMPO_TRANSICION)
+      .attr("x", function(d) {
+        return radiusScale(d.value) * Math.cos(angleScale(d.label));
+      })
+      .attr("y", function(d) {
+        return radiusScale(d.value) * Math.sin(angleScale(d.label));
+      }),
+      (exit) => exit.remove()
+  ); 
+function radar_marca(data) {
+  SVG3
+}
 
-contenedorTitulos
-  .append("text")
-  .attr("transform", `rotate(-90) translate(${-(margin3.top + HEIGHTVIS3 / 2)}, ${margin3.left / 4})`)
-  .attr("text-anchor", "middle")
-  .attr("font-size", 16)
-  .text("Precio promedio");
 
-contenedorTitulos
-  .append("text")
-  .attr("transform", `translate(${margin3.left + WIDTHVIS3 / 2}, ${HEIGHT3 - margin3.bottom / 2.5})`)
-  .attr("text-anchor", "middle")
-  .attr("font-size", 16)
-  .text("Año");
+// const widthLegend = 200,
+//   heightLegend = 100;
 
-const widthLegend = 200,
-  heightLegend = 100;
-
-const svgLegend = d3
-  .select("#leyenda")
-  .attr("width", widthLegend)
-  .attr("height", heightLegend);
+// const svgLegend = d3
+//   .select("#leyenda")
+//   .attr("width", widthLegend)
+//   .attr("height", heightLegend);
 
 const createMultiLine = (data) => {
   console.log(data);
