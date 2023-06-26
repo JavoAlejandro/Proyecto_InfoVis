@@ -153,6 +153,12 @@ function createCameras(data) {
 
   contenedorEjeResolucion.call(ejeResolucionPanoramica)
 
+  contenedorEjeResolucion
+    .selectAll("line")
+    .attr("x1", WIDTH1 - margin.left - margin.right)
+    .attr("opacity", 0.5)
+    .attr("stroke-dasharray", "5");
+
   const escalaPrecioPanoramica = d3
     .scaleLinear()
     .domain(d3.extent(data, d => d.Price))
@@ -162,6 +168,12 @@ function createCameras(data) {
   const ejePrecioPanoramica = d3.axisBottom(escalaPrecioPanoramica);
 
   contenedorEjePrecio.call(ejePrecioPanoramica)
+
+  contenedorEjePrecio
+    .selectAll("line")
+    .attr("y1", -(HEIGHT1 - margin.top - margin.bottom))
+    .attr("stroke-dasharray", "5")
+    .attr("opacity", 0.5);
 
   const puntosPanoramica = contenedorPuntosPanoramica
     .selectAll("circle")
@@ -189,30 +201,7 @@ function createCameras(data) {
           )
           .attr("cx", (d) => escalaPrecioPanoramica(d.Price)),
       (exit) => exit.remove()
-    )
-    .on("mouseover", function (event, d) {
-      txt11.text(`Camera: ${d.Model}`);
-      txt12.text(`Price: ${d.Price}`);
-      txt13.text(`Max Resolution: ${d.Max_resolution}`);
-      contenedorCuadro.style("visibility", "visible");
-    })
-    .on("mousemove", function (event) {
-      txt11
-        .attr("x", event.offsetX - 75 + "px")
-        .attr("y", event.offsetY + 20 + "px");
-      txt12
-        .attr("x", event.offsetX - 75 + "px")
-        .attr("y", event.offsetY + 35 + "px");
-      txt13
-        .attr("x", event.offsetX - 75 + "px")
-        .attr("y", event.offsetY + 50 + "px");
-      contenedorFondo
-        .attr("x", event.offsetX - 80 + "px")
-        .attr("y", event.offsetY + 5 + "px");
-    })
-    .on("mouseout", () => {
-      contenedorCuadro.style("visibility", "hidden");
-    }); 
+    ); 
    
   // Vista Detalle
     
@@ -225,6 +214,13 @@ function createCameras(data) {
 
   contenedorEjeResolucionDetalle.call(ejeResolucionDetalle)
 
+  contenedorEjeResolucionDetalle
+    .selectAll("line")
+    .attr("x1", WIDTH1 - margin.left - margin.right)
+    .attr("opacity", 0.5)
+    .attr("stroke-dasharray", "5");
+
+
   const escalaPrecioDetalle = d3
     .scaleLinear()
     .domain([100,200].map(escalaPrecioPanoramica.invert))
@@ -233,6 +229,13 @@ function createCameras(data) {
   const ejePrecioDetalle = d3.axisBottom(escalaPrecioDetalle);
 
   contenedorEjePrecioDetalle.call(ejePrecioDetalle);
+  
+  contenedorEjePrecioDetalle
+    .selectAll("line")
+    .attr("y1", -(HEIGHT1 - margin.top - margin.bottom))
+    .attr("stroke-dasharray", "5")
+    .attr("opacity", 0.5);
+
 
   const contenedorCuadro = svgDetalle
     .append("g")
@@ -281,7 +284,7 @@ function createCameras(data) {
       (exit) => exit.remove()
     )
     .on("mouseover", function (event, d) {
-      txt11.text(`Camera: ${d.Model}`);
+      txt11.text(d.Model);
       txt12.text(`Price: ${d.Price}`);
       txt13.text(`Max Resolution: ${d.Max_resolution}`);
       contenedorCuadro.style("visibility", "visible");
@@ -340,10 +343,20 @@ function createCameras(data) {
       .attr("fill", d => filtro(d) ? "orange" : "#D9ED92")
     
     escalaPrecioDetalle.domain([precioMin, precioMax]);
-    contenedorEjePrecioDetalle.call(d3.axisBottom(escalaPrecioDetalle));
+    contenedorEjePrecioDetalle.call(d3.axisBottom(escalaPrecioDetalle))
+    contenedorEjePrecioDetalle
+    .selectAll("line")
+    .attr("y1", -(HEIGHT1 - margin.top - margin.bottom))
+    .attr("stroke-dasharray", "5")
+    .attr("opacity", 0.5);
 
     escalaResolucionDetalle.domain([resolucionMin, resolucionMax]);
-    contenedorEjeResolucionDetalle.call(d3.axisLeft(escalaResolucionDetalle));
+    contenedorEjeResolucionDetalle.call(d3.axisLeft(escalaResolucionDetalle))
+    contenedorEjeResolucionDetalle
+    .selectAll("line")
+    .attr("x1", WIDTH1 - margin.left - margin.right)
+    .attr("opacity", 0.5)
+    .attr("stroke-dasharray", "5");
 
     puntosDetalle
       .attr("cx", d => escalaPrecioDetalle(d.Price))
