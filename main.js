@@ -712,11 +712,11 @@ function lineas_marca(data) {
 };
 // ******************************************************************* VIS 3 ************************************************************************************
 
-datos = [{label: 'Etiqueta 1', value: 80},
-{label: 'Etiqueta 2', value: 60},
-{label: 'Etiqueta 3', value: 70},
-{label: 'Etiqueta 4', value: 50},
-{label: 'Etiqueta 5', value: 75}]
+datos = [{label: 'Fecha de salida', value: 80},
+{label: 'Resolución máxima', value: 60},
+{label: 'Pixeles efectivos ', value: 70},
+{label: 'Peso', value: 50},
+{label: 'Price', value: 75}]
 // grafico3
 var radius = Math.min(WIDTHVIS3, HEIGHTVIS3) / 2;
 var angleScale = d3.scaleBand()
@@ -732,6 +732,7 @@ var line = d3.lineRadial()
 .angle((d) => angleScale(d.label))
 .radius((d) => radiusScale(d.value))
 .curve(d3.curveLinearClosed);
+
 
 console.log(datos.map((d) => d.label))
 
