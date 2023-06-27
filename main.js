@@ -741,6 +741,11 @@ function radar_marca(datos, brand) {
   {label: 'Peso', value: d3.mean(datosMarca, (d) => d.Weight_incbatteries), x: WIDTHVIS3*0.35, y: HEIGHTVIS3*1.1},
   {label: 'Price', value: d3.mean(datosMarca, (d) => d.Price), x: WIDTHVIS3*0.15, y: HEIGHTVIS3*0.45}]
 
+  values.forEach(element => {
+    console.log(element.value)
+    
+  });
+
   const angleScale = d3.scaleBand()
     .domain(values.map((d) => d.label))
     .range([0, Math.PI * 2])
@@ -759,6 +764,8 @@ function radar_marca(datos, brand) {
       .attr("class", "label")
       .attr("x", (d) => d.x)
       .attr("y", (d) => d.y)
+      .transition()
+      .duration(TIEMPO_TRANSICION)
       .text((d) => d.label)
       .attr("text-anchor", "middle")
       .attr("font-size", 12)
@@ -783,14 +790,18 @@ function radar_marca(datos, brand) {
     .data(values)
     .join(
       (enter) =>
-      enter.append("line")
-      .attr("class", "line")
-      .attr('x1', 0)
-      .attr('y1', 0)
-      .attr('x2', (d) => radiusScale(d.value) * Math.cos(angleScale(d.label)))
-      .attr('y2', (d) => radiusScale(d.value) * Math.sin(angleScale(d.label)))
-      .attr("stroke", "rgba(0, 0, 0, " + 0.3 + ")")
-      .attr("stroke-width", 1)
+        enter.append("line")
+        .attr("class", "line")
+        .attr('x1', 0)
+        .attr('y1', 0)
+        .attr('x2', 0)
+        .attr('y2', 0)
+        .attr("stroke", "rgba(0, 0, 0, " + 0.3 + ")")
+        .attr("stroke-width", 1)
+        .transition() // Add transition for animation
+        .duration(TIEMPO_TRANSICION)
+        .attr('x2', (d) => radiusScale(d.value) * Math.cos(angleScale(d.label)))
+        .attr('y2', (d) => radiusScale(d.value) * Math.sin(angleScale(d.label)))
       ,
       (update) =>
         update
@@ -810,6 +821,10 @@ function radar_marca(datos, brand) {
       .attr("class", "area")
       .attr("d", line)
       .attr("fill", "orange")
+      .attr("opacity", 0)
+      .transition()
+      .duration(TIEMPO_TRANSICION + 600)
+      .attr("opacity", 1)
       ,
       (update) =>
         update
