@@ -26,14 +26,14 @@ const WIDTHVIS2 = WIDTH2 - margin2.right - margin2.left;
 const detail_WIDTH2 = 400
 const detail_HEIGHT2 = 400
 
-const WIDTH3 = 400;
+const WIDTH3 = 600;
 const HEIGHT3 = 400;
 
 const margin3 = {
-    top: 50,
-    bottom: 50,
-    left: 50,
-    right: 50
+    top: 60,
+    bottom: 60,
+    left: 30,
+    right: 60
 };
 
 const HEIGHTVIS3 = HEIGHT3 - margin3.top - margin3.bottom;
@@ -712,13 +712,115 @@ function lineas_marca(data) {
 };
 // ******************************************************************* VIS 3 ************************************************************************************
 
-datos = [{label: 'Fecha de salida', value: 80},
-{label: 'Resolución máxima', value: 60},
-{label: 'Pixeles efectivos ', value: 70},
-{label: 'Peso', value: 50},
-{label: 'Price', value: 75}]
 // grafico3
-var radius = Math.min(WIDTHVIS3, HEIGHTVIS3) / 2;
+let radius = Math.min(WIDTHVIS3, HEIGHTVIS3) / 2;
+
+const contenedorAngles = SVG3
+  .append("g")
+  .attr("transform", `translate(${WIDTHVIS3 / 2}, ${HEIGHTVIS3 / 2})`);
+  
+const contenedorAreas = SVG3
+  .append("g")
+  .attr("transform", `translate(${WIDTHVIS3 / 2}, ${HEIGHTVIS3 / 2})`);
+  
+const contenedorLabels = SVG3
+  .append("g")
+
+const contenedorLines = SVG3
+  .append("g")
+  .attr("transform", `translate(${WIDTHVIS3 * 0.55}, ${HEIGHTVIS3 * 0.62})`);
+
+function radar_marca(datos, brand) {
+  d3.selectAll("#selected").text(`Marca: ${brand}`)
+  // The first value is the mean of the release_date column
+  const datosMarca = datos.filter(d => d.Brand == brand)
+
+  values = [{label: 'Fecha de salida', value: d3.mean(datosMarca, (d) => d.Release_date), x: WIDTHVIS3/1.75, y: HEIGHTVIS3*0.20},
+  {label: 'Resolución máxima', value: d3.mean(datosMarca, (d) => d.Max_resolution), x: WIDTHVIS3, y: HEIGHTVIS3*0.45},
+  {label: 'Pixeles efectivos ', value: d3.mean(datosMarca, (d) => d.Effective_pixels), x: WIDTHVIS3*0.8, y: HEIGHTVIS3*1.1},
+  {label: 'Peso', value: d3.mean(datosMarca, (d) => d.Weight_incbatteries), x: WIDTHVIS3*0.35, y: HEIGHTVIS3*1.1},
+  {label: 'Price', value: d3.mean(datosMarca, (d) => d.Price), x: WIDTHVIS3*0.15, y: HEIGHTVIS3*0.45}]
+
+  const angleScale = d3.scaleBand()
+    .domain(values.map((d) => d.label))
+    .range([0, Math.PI * 2])
+    .padding(0.2);
+
+  const radiusScale = d3.scaleLinear()
+    .domain([0, d3.max(values, (d) => d.value)])
+    .range([0, radius]);
+
+  contenedorLabels
+    .selectAll(".label")
+    .data(values)
+    .join(
+      (enter) =>
+      enter.append("text")
+      .attr("class", "label")
+      .attr("x", (d) => d.x)
+      .attr("y", (d) => d.y)
+      .text((d) => d.label)
+      .attr("text-anchor", "middle")
+      .attr("font-size", 12)
+      ,
+      (update) =>
+        update
+          .transition()
+          .duration(TIEMPO_TRANSICION)
+          .attr("x", (d) => d.x)
+          .attr("y", (d) => d.y),
+      (exit) => exit.remove()
+      );
+    
+  const line = d3
+    .lineRadial()
+    .angle((d) => angleScale(d.label))
+    .radius((d) => radiusScale(d.value))
+    .curve(d3.curveLinearClosed);
+  
+  contenedorLines
+    .selectAll(".line")
+    .data(values)
+    .join(
+      (enter) =>
+      enter.append("line")
+      .attr("class", "line")
+      .attr('x1', 0)
+      .attr('y1', 0)
+      .attr('x2', (d) => radiusScale(d.value) * Math.cos(angleScale(d.label)))
+      .attr('y2', (d) => radiusScale(d.value) * Math.sin(angleScale(d.label)))
+      .attr("stroke", "rgba(0, 0, 0, " + 0.3 + ")")
+      .attr("stroke-width", 1)
+      ,
+      (update) =>
+        update
+          .transition()
+          .duration(TIEMPO_TRANSICION)
+          .attr('x2', (d) => radiusScale(d.value) * Math.cos(angleScale(d.label)))
+          .attr('y2', (d) => radiusScale(d.value) * Math.sin(angleScale(d.label))),
+      (exit) => exit.remove()
+      );
+  
+  contenedorAreas
+    .selectAll(".area")
+    .data([values])
+    .join(
+      (enter) =>
+      enter.append("path")
+      .attr("class", "area")
+      .attr("d", line)
+      .attr("fill", "orange")
+      ,
+      (update) =>
+        update
+          .transition()
+          .duration(TIEMPO_TRANSICION)
+          .attr("d", line)
+          .attr("fill", "orange"),
+      (exit) => exit.remove()
+      );
+}
+/*var radius = Math.min(WIDTHVIS3, HEIGHTVIS3) / 2;
 var angleScale = d3.scaleBand()
 .domain(datos.map((d) => d.label))
 .range([0, Math.PI * 2])
@@ -807,10 +909,8 @@ const labels = grafico3.selectAll(".label")
         return radiusScale(d.value) * Math.sin(angleScale(d.label));
       }),
       (exit) => exit.remove()
-  ); 
-function radar_marca(data, brand) {
-  d3.selectAll("#selected").text(`Marca: ${brand}`)
-}
+  ); */
+
 
 
 // const widthLegend = 200,
