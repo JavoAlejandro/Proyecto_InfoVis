@@ -731,9 +731,14 @@ const contenedorLines = SVG3
   .attr("transform", `translate(${WIDTHVIS3 * 0.55}, ${HEIGHTVIS3 * 0.62})`);
 
 
-function normalize(value, min, max) {
-  return (value - min) / (max - min);
-}
+  function normalize(value, min, max) {
+    if (min === max) {
+      // Handle the case where min equals max
+      return 0; // Return a default value (you can choose a different default value if desired)
+    } else {
+      return (value - min) / (max - min);
+    }
+  }
 
 function radar_marca(datos, brand) {
   d3.selectAll("#selected")
@@ -753,13 +758,7 @@ function radar_marca(datos, brand) {
   const pesoP = d3.mean(datosMarca, (d) => d.Weight_incbatteries)
   const precioP = d3.mean(datosMarca, (d) => d.Price)
 
-  console.log(`fechaSalida: ${fechaSalida}`)
-  console.log(`resolucionMaxima: ${resolucionMaxima}`)
-  console.log(`pixelesEfectivos: ${pixelesEfectivos}`)
-  console.log(`peso: ${peso}`)
-  console.log(`precio: ${precio}`)
-
-  // we check if the data is longer than 1, if not, we don't normalize
+  console.log(datosMarca.length)
 
   const normalizedFechaSalida = datosMarca.map(d => normalize(d.Release_date, fechaSalida[0], fechaSalida[1]));
   const normalizedResolucionMaxima = datosMarca.map(d => normalize(d.Max_resolution, resolucionMaxima[0], resolucionMaxima[1]));
@@ -767,6 +766,14 @@ function radar_marca(datos, brand) {
   const normalizedPeso = datosMarca.map(d => normalize(d.Weight_incbatteries, peso[0], peso[1]));
   const normalizedPrecio = datosMarca.map(d => normalize(d.Price, precio[0], precio[1]));
 
+  /*console.log(normalizedFechaSalida)
+  console.log(normalizedResolucionMaxima)
+  console.log(normalizedPixelesEfectivos)
+  console.log(normalizedPeso)
+  console.log(normalizedPrecio)
+  console.log(precioP)*/
+
+  // We have to check if the lenght of the data is larger than 1, otherwise normalize will return NaN, so we use the already calculated mean
 
   values = [
     {label: 'Fecha de salida', value: d3.mean(normalizedFechaSalida), x: WIDTHVIS3/1.75, y: HEIGHTVIS3*0.20},
@@ -775,6 +782,7 @@ function radar_marca(datos, brand) {
     {label: 'Peso', value: d3.mean(normalizedPeso), x: WIDTHVIS3*0.35, y: HEIGHTVIS3*1.1},
     {label: 'Price', value: d3.mean(normalizedPrecio), x: WIDTHVIS3*0.15, y: HEIGHTVIS3*0.45}
   ];
+
 
 
   const angleScale = d3.scaleBand()
@@ -855,7 +863,7 @@ function radar_marca(datos, brand) {
     .attr("stroke", "#113149")
     .attr("stroke-width", "1")
     .attr("width", 230)
-    .attr("height", 110)
+    .attr("height", 115)
     .attr("rx", "4px");
 
   const txt31 = contenedorCuadroRadar.append("text").attr("class", "txt");
@@ -864,6 +872,7 @@ function radar_marca(datos, brand) {
   const txt34 = contenedorCuadroRadar.append("text").attr("class", "txt");
   const txt35 = contenedorCuadroRadar.append("text").attr("class", "txt");
   const txt36 = contenedorCuadroRadar.append("text").attr("class", "txt");
+  const txt37 = contenedorCuadroRadar.append("text").attr("class", "txt");
   
   contenedorAreas
     .selectAll(".area")
@@ -894,6 +903,7 @@ function radar_marca(datos, brand) {
         txt34.text(`Píxeles efectivos promedio: ${Math.round(pixelesEfectivosP)}`);
         txt35.text(`Peso promedio: ${Math.round(pesoP)}`);
         txt36.text(`Precio promedio: ${Math.round(precioP)}`);
+        txt37.text(`Número de cámaras: ${datosMarca.length}`);
         contenedorCuadroRadar.style("visibility", "visible");
       })
       .on("mousemove", function (event) {
@@ -915,6 +925,9 @@ function radar_marca(datos, brand) {
         txt36
           .attr("x", event.offsetX + 25 + "px")
           .attr("y", event.offsetY + 95 + "px");
+        txt37
+          .attr("x", event.offsetX + 25 + "px")
+          .attr("y", event.offsetY + 110 + "px");
 
         contenedorFondoRadar
           .attr("x", event.offsetX + 20 + "px")
