@@ -780,7 +780,7 @@ function radar_marca(datos, brand) {
     {label: 'Resolución máxima', value: d3.mean(normalizedResolucionMaxima), x: WIDTHVIS3, y: HEIGHTVIS3*0.45},
     {label: 'Pixeles efectivos ', value: d3.mean(normalizedPixelesEfectivos), x: WIDTHVIS3*0.8, y: HEIGHTVIS3*1.1},
     {label: 'Peso', value: d3.mean(normalizedPeso), x: WIDTHVIS3*0.35, y: HEIGHTVIS3*1.1},
-    {label: 'Price', value: d3.mean(normalizedPrecio), x: WIDTHVIS3*0.15, y: HEIGHTVIS3*0.45}
+    {label: 'Precio', value: d3.mean(normalizedPrecio), x: WIDTHVIS3*0.15, y: HEIGHTVIS3*0.45}
   ];
 
 
